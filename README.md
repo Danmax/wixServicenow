@@ -3,7 +3,7 @@ This is an experimental development of Wix Velo to Servicenow API
 
 ## Create Integration user
 
-Set up New Integration User
+### Set up New Integration User
 
 Name the User to edentify the type of integration 
 for example: wixVeloIntegration
@@ -24,55 +24,5 @@ https://docs.servicenow.com/bundle/tokyo-application-development/page/integrate/
 Create Basic Authentication Header Generator
 https://www.blitter.se/utils/basic-authentication-header-generator/
 
-Login to your ServiceNow instance go to REST API Explorer
-
-
-import {fetch} from 'wix-fetch';
-
-// // ... REST Get Function
-
-export async function getIncidents() {
-    const settings = {
-        method : 'GET',
-        headers: {
-            Accept: 'application/json',
-            Authorization: `Basic d42dmVsbzpGcm93ZWFyMjAyMCE=`
-        }
-    };
-    try {
-        const fetchResponse = await fetch(`https://instanceName.service-now.com/api/now/table/x_snc_table_name?sysparm_fields=first_name%2Clast_name%2Cemail&sysparm_limit=10`, settings)
-        const data = await fetchResponse.json();
-        return data;    
-    }
-    catch(err) {
-        return err
-
-    }
-}
-
-export async function postMessage(first_name, last_name, email) {
-    const fieldsObj = {name, industry_type, website}
-    console.log(fieldsObj)
-    const settings = {
-        method : 'POST',
-        body: JSON.stringify(fieldsObj),
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Basic d42ldmVsbzpGcm93ZWFyMjAyMCE=`
-        }
-    };
-    try{
-        const fetchResponse = await fetch("https://instanceName.service-now.com/api/now/table/x_snc_table_name",settings)
-        const data = await fetchResponse.json();
-        console.log(data);
-        return data
-    }
-    catch(err) {
-        return err
-    }
-}
-
-
-
-
+## Login to your ServiceNow instance go to REST API Explorer
 
