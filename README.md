@@ -42,7 +42,6 @@ export async function getIncidents() {
     try {
         const fetchResponse = await fetch(`https://instanceName.service-now.com/api/now/table/x_snc_table_name?sysparm_fields=first_name%2Clast_name%2Cemail&sysparm_limit=10`, settings)
         const data = await fetchResponse.json();
-
         return data;    
     }
     catch(err) {
@@ -65,7 +64,6 @@ export async function postMessage(first_name, last_name, email) {
     try{
         const fetchResponse = await fetch("https://instanceName.service-now.com/api/now/table/x_snc_table_name",settings)
         const data = await fetchResponse.json();
-
         console.log(data);
         return data
     }
