@@ -21,11 +21,10 @@ Now we have our integration user set up
 https://docs.servicenow.com/bundle/tokyo-application-development/page/integrate/inbound-rest/concept/c_RESTAPI.html
 
 
-or use Basic Authentication Header Generator
+Create Basic Authentication Header Generator
 https://www.blitter.se/utils/basic-authentication-header-generator/
 
 Login to your ServiceNow instance go to REST API Explorer
-
 
 
 import {fetch} from 'wix-fetch';
@@ -37,7 +36,7 @@ export async function getIncidents() {
         method : 'GET',
         headers: {
             Accept: 'application/json',
-            Authorization: `Basic d2l4dmVsbzpGcm93ZWFyMjAyMCE=`
+            Authorization: `Basic d42dmVsbzpGcm93ZWFyMjAyMCE=`
         }
     };
     try {
