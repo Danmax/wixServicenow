@@ -5,7 +5,7 @@ This is an experimental development of Wix Velo to Servicenow API
 
 ### Set up New Integration User
 
-Name the User to edentify the type of integration 
+Name the User to identify the type of integration 
 for example: wixVeloIntegration
 
 1. Create new User
@@ -20,9 +20,13 @@ Now we have our integration user set up
 
 https://docs.servicenow.com/bundle/tokyo-application-development/page/integrate/inbound-rest/concept/c_RESTAPI.html
 
+### Service Now REST API Explorer
+get you HTTP Method / URI
 
+
+### Set Basic Encryption
 Create Basic Authentication Header Generator
 https://www.blitter.se/utils/basic-authentication-header-generator/
 
-## Login to your ServiceNow instance go to REST API Explorer
+view snAPI.jsw for backend functions
 
