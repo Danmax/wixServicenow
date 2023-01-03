@@ -1,133 +1,81 @@
 # wixServicenow
 This is an experimental development of Wix Velo to Servicenow API
 
+## Create Integration user
 
-Here we will take API package and transformit for Servicenow Connection API
+Set up New Integration User
 
-# Create Secrete API connection 
+Name the User to edentify the type of integration 
+for example: wixVeloIntegration
 
-User ID - Create new Integration user in SN
-Password 
-Token ?
+1. Create new User
+2. Check "Password needs to Reset"
+3. Check "Internal Integration User"
+4. Set password and Save
+5. Login as new user and set new Password
+6. Greate new Group name it "REST API"
+7. Add Roles: rest_api_explorer, rest_service
 
-Step[operation 2 ]
+Now we have our integration user set up
 
-Project File
+https://docs.servicenow.com/bundle/tokyo-application-development/page/integrate/inbound-rest/concept/c_RESTAPI.html
 
-import { queryRecords, createRecords } from '@velo/salesforce-integration-backend';
 
-export async function getPhoneBasedOnName(accountName) {
-    const query = `SELECT phone FROM Account WHERE name='${accountName}' ORDER BY CreatedDate DESC`;
-    try {
-        validateName(accountName);
-        const result = await queryRecords(query);
-        return result.records[0].Phone;
-    } catch (err) {
-        return Promise.reject('Query records failed. Info: ' + err);
-    }
-}
+or use Basic Authentication Header Generator
+https://www.blitter.se/utils/basic-authentication-header-generator/
 
-export async function createRecordsWrapper(record) {
-    const { name, phone } = record;
-    try {
-        validateName(name);
-        validatePhoneNumber(phone);
-        try {
-            const res = await createRecords('Account', record);
-            return res.success;
-        } catch (err) {
-            return Promise.reject(err);
+Login to your ServiceNow instance go to REST API Explorer
+
+
+
+import {fetch} from 'wix-fetch';
+
+// // ... REST Get Function
+
+export async function getIncidents() {
+    const settings = {
+        method : 'GET',
+        headers: {
+            Accept: 'application/json',
+            Authorization: `Basic d2l4dmVsbzpGcm93ZWFyMjAyMCE=`
         }
-    } catch (validationError) {
-        return Promise.reject(validationError.toString());
-    }
-}
-
-function validateName(name) {
-    const regex = new RegExp('^[A-Za-z\\s\\d-]+$');
-    if (!regex.test(name)) {
-        throw new Error(`Provided name must only contains English letters (got: ${name})`);
-    }
-    return true;
-}
-
-function validatePhoneNumber(phone) {
-    const regex = new RegExp('^[0-9]+$');
-    if (!regex.test(phone)) {
-        throw new Error(`Provided phone must only contains digits (got: ${phone})`);
-    }
-    return true;
-}
-
-
-
-////////////////
-salesforce.js
-
-import jsforce from 'jsforce';
-import { getSecret } from 'wix-secrets-backend';
-
-const loginUrl = 'https://login.salesforce.com';
-const sfConn = new jsforce.Connection({ loginUrl });
-
-async function authenticateAccount() {
+    };
     try {
-        const sfAccountSecretStr = await getSecret('velo-salesforce-credentials');
-        const sfAccountSecret = JSON.parse(sfAccountSecretStr);
-        await sfConn.login(sfAccountSecret.username, sfAccountSecret.password + sfAccountSecret.token);
-    } catch (err) {
-        return Promise.reject(err);
+        const fetchResponse = await fetch(`https://instanceName.service-now.com/api/now/table/x_snc_table_name?sysparm_fields=first_name%2Clast_name%2Cemail&sysparm_limit=10`, settings)
+        const data = await fetchResponse.json();
+
+        return data;    
+    }
+    catch(err) {
+        return err
+
     }
 }
 
-// Query in SOQL (https://jsforce.github.io/document/#using-soql)
-// Example: SELECT Id, Name FROM Contact
-export async function queryRecords(queryStr) {
-    try {
-        await authenticateAccount();
-        return await sfConn.query(queryStr);
-    } catch (err) {
-        return Promise.reject(err);
+export async function postMessage(first_name, last_name, email) {
+    const fieldsObj = {name, industry_type, website}
+    console.log(fieldsObj)
+    const settings = {
+        method : 'POST',
+        body: JSON.stringify(fieldsObj),
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Basic d42ldmVsbzpGcm93ZWFyMjAyMCE=`
+        }
+    };
+    try{
+        const fetchResponse = await fetch("https://instanceName.service-now.com/api/now/table/x_snc_table_name",settings)
+        const data = await fetchResponse.json();
+
+        console.log(data);
+        return data
+    }
+    catch(err) {
+        return err
     }
 }
 
-// Retrieve from a Salesforce Object the records with the specified IDs
-export async function retrieveRecords(sfObjName, ids) {
-    try {
-        await authenticateAccount();
-        return await sfConn.sobject(sfObjName).retrieve(ids);
-    } catch (err) {
-        return Promise.reject(err);
-    }
-}
 
-// Creates new given records in a Salesforce Object 
-export async function createRecords(sfObjName, records) {
-    try {
-        await authenticateAccount();
-        return await sfConn.sobject(sfObjName).create(records);
-    } catch (err) {
-        return Promise.reject(err);
-    }
-}
 
-// Updates given records in a Salesforce Object 
-export async function updateRecords(sfObjName, records) {
-    console.log(typeof records)
-    try {
-        await authenticateAccount();
-        return await sfConn.sobject(sfObjName).update(records);
-    } catch (err) {
-        return Promise.reject(err);
-    }
-}
 
-// Deletes given records in Salesforce Object 
-export async function deleteRecords(sfObjName, ids) {
-    try {
-        await authenticateAccount();
-        return await sfConn.sobject(sfObjName).del(ids);
-    } catch (err) {
-        return Promise.reject(err);
-    }
-}
+
